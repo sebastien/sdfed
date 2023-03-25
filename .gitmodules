@@ -1,0 +1,6 @@
+[submodule "deps/sdf"]
+	path = deps/sdf
+	url = git@github.com:fogleman/sdf.git
+[submodule "deps/uijs"]
+	path = deps/uijs
+	url = git@github.com:sebastien/ui.js.git

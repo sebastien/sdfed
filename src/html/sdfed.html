@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-nz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../css/uijs.css" rel="stylesheet" />
+    <title>Conversation example</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "@codemirror/": "https://deno.land/x/codemirror_esm@v6.0.1/esm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <!--
+    <script type="module">
+      async function main() {
+        console.log("POUET", window.loadPyodide);
+        let pyodide = await loadPyodide();
+        console.log("POUET", { pyodide });
+        console.log(pyodide.runPython("1 + 2"));
+      }
+      main();
+    </script>
+    -->
+    <script type="module">
+      import { asyncRun } from "../js/sdfed/python.js";
+
+      const script = `
+    import statistics
+    from js import A_rank
+    statistics.stdev(A_rank)
+`;
+
+      const context = {
+        A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
+      };
+
+      async function main() {
+        try {
+          const { results, error } = await asyncRun(script, context);
+          if (results) {
+            console.log("pyodideWorker return results: ", results);
+          } else if (error) {
+            console.log("pyodideWorker error: ", error);
+          }
+        } catch (e) {
+          console.log(
+            `Error in pyodideWorker at ${e.filename}, Line: ${e.lineno}, ${e.message}`
+          );
+        }
+      }
+
+      main();
+    </script>
+    <!--
+    <script>
+      const worker = new Worker("../js/sdfed/python-worker.js");
+
+      worker.onmessage = function (event) {
+        console.log("Received message from worker:", event.data);
+      };
+
+      worker.postMessage({ type: "loadPyodide" });
+    </script>
+    -->
+    <script async type="module">
+      import {
+        basicSetup,
+        EditorView,
+      } from "@codemirror/codemirror/dist/index.js";
+      import { javascript } from "@codemirror/lang-javascript/dist/index.js";
+
+      new EditorView({
+        doc: "console.log('hello')\n",
+        extensions: [basicSetup, javascript()],
+        parent: document.body,
+      });
+    </script>
+  </body>
+</html>
