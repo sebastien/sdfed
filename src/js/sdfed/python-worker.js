@@ -4,7 +4,8 @@ importScripts(PYIODIDE_URL);
 
 async function loadPyodideAndPackages() {
   self.pyodide = await loadPyodide();
-  await self.pyodide.loadPackage(["numpy", "pytz"]);
+  await self.pyodide.loadPackage(["numpy", "pytz", "scikit-image"]);
+  await pyodide.loadPackage("../../whl/sdf-0.1-py3-none-any.whl");
 }
 let pyodideReadyPromise = loadPyodideAndPackages();
 

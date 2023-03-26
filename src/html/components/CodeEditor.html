@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:on="https://github.com/sebastien/ui.js">
+  <head>
+    <title>Block Component</title>
+    <style>
+      <![CDATA[
+      .CodeBlock  {
+      	border: 2px solid red;
+      }
+      ]]>
+    </style>
+  </head>
+  <body>
+    <template id="CodeEditor">
+      <div class="CodeBlock">
+        <div class="-header">
+          <div class="-origin">
+            <span class="FileName">markdown.js</span>
+            <span class="ProgrammingLanguage">(JavaScript)</span>
+          </div>
+          <div class="-actions">
+            <button>Edit</button>
+          </div>
+        </div>
+        <div class="CodeMirror"></div>
+        <div class="-footer">
+            <button on:click="!CodeEditor.Run">Run</button>
+        </div>
+      </div>
+
+    </template>
+    <script type="module">
+      //<![CDATA[
+      import {
+        basicSetup,
+        EditorView,
+      } from "@codemirror/codemirror/dist/index.js";
+      import { sub } from "@ui.js";
+      import { javascript } from "@codemirror/lang-javascript/dist/index.js";
+      import { python } from "@codemirror/lang-python/dist/index.js";
+
+      sub("CodeEditor.Run", (event) => {
+        console.log("Code editor running", {event})
+      })
+
+      sub("CodeEditor.Create", ({effector,scope}) => {
+        // NOTE: This is a bit awkward and should be wrapper a as higher level
+        // component object.
+        const parent = effector.query(".CodeMirror")[0];
+        const view = new EditorView({
+          doc: "[0] * 100\n",
+          extensions: [basicSetup, python()],
+          parent,
+        });
+        scope.state.patch(scope.localPath, {view});
+      })
+      //]]>
+    </script>
+
+  </body>
+</html>

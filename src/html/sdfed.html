@@ -9,30 +9,20 @@
     <script type="importmap">
       {
         "imports": {
-          "@codemirror/": "https://deno.land/x/codemirror_esm@v6.0.1/esm/"
+          "@codemirror/": "https://deno.land/x/codemirror_esm@v6.0.1/esm/",
+          "@ui.js": "../js/ui.js"
         }
       }
     </script>
   </head>
   <body>
-    <!--
-    <script type="module">
-      async function main() {
-        console.log("POUET", window.loadPyodide);
-        let pyodide = await loadPyodide();
-        console.log("POUET", { pyodide });
-        console.log(pyodide.runPython("1 + 2"));
-      }
-      main();
-    </script>
-    -->
     <script type="module">
       import { asyncRun } from "../js/sdfed/python.js";
 
       const script = `
-    import statistics
-    from js import A_rank
-    statistics.stdev(A_rank)
+import sdf
+print(sdf)
+sdf
 `;
 
       const context = {
@@ -56,29 +46,12 @@
 
       main();
     </script>
-    <!--
-    <script>
-      const worker = new Worker("../js/sdfed/python-worker.js");
 
-      worker.onmessage = function (event) {
-        console.log("Received message from worker:", event.data);
-      };
-
-      worker.postMessage({ type: "loadPyodide" });
-    </script>
-    -->
+    <div data-ui="CodeEditor"></div>
+    <template data-src="components/CodeEditor.html"></template>
     <script async type="module">
-      import {
-        basicSetup,
-        EditorView,
-      } from "@codemirror/codemirror/dist/index.js";
-      import { javascript } from "@codemirror/lang-javascript/dist/index.js";
-
-      new EditorView({
-        doc: "console.log('hello')\n",
-        extensions: [basicSetup, javascript()],
-        parent: document.body,
-      });
+      import ui from "../js/ui.js";
+      ui();
     </script>
   </body>
 </html>

@@ -1,0 +1,2 @@
+appenv_declare sdef
+appenv_prepend PATH $APPENV_DIR/bin
