@@ -35,25 +35,29 @@
         basicSetup,
         EditorView,
       } from "@codemirror/codemirror/dist/index.js";
-      import { sub } from "@ui.js";
+      import { on } from "@ui.js";
       import { javascript } from "@codemirror/lang-javascript/dist/index.js";
       import { python } from "@codemirror/lang-python/dist/index.js";
 
-      sub("CodeEditor.Run", (event) => {
-        console.log("Code editor running", {event})
-      })
-
-      sub("CodeEditor.Create", ({effector,scope}) => {
-        // NOTE: This is a bit awkward and should be wrapper a as higher level
-        // component object.
-        const parent = effector.query(".CodeMirror")[0];
-        const view = new EditorView({
-          doc: "[0] * 100\n",
-          extensions: [basicSetup, python()],
-          parent,
-        });
-        scope.state.patch(scope.localPath, {view});
-      })
+      console.log("Code editor loaded");
+      on({
+        ["CodeEditor.Run"]: (event) => {
+          console.log("Code editor running", {event})
+        },
+        ["CodeEditor.Create"]: (_, topic) => {
+          for (const {effector,scope} of topic.flush()) {
+            // NOTE: This is a bit awkward and should be wrapper a as higher level
+            // component object.
+            const parent = effector.query(".CodeMirror")[0];
+            const view = new EditorView({
+              doc: "[0] * 100\n",
+              extensions: [basicSetup, python()],
+              parent,
+            });
+            scope.state.patch(scope.localPath, {view});
+          }
+          return false;
+        }})
       //]]>
     </script>
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+  xmlns:out="https://github.com/sebastien/ui.js"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../../css/uijs.css" rel="stylesheet" />
+    <title>Status Line Component</title>
+    <style>
+      /*<![CDATA[*/
+      .StatusLine {
+        border-top: 1px solid var(--control-bd);
+        padding: 12px;
+        display: flex;
+        gap: 12px;
+      }
+      .StatusLine .-status {
+        flex-grow: 1;
+      }
+      /*]]>*/
+    </style>
+  </head>
+  <body>
+    <h1>Status Line Component</h1>
+    <p>Displays the status of the current application</p>
+
+    <section class="template" id="StatusLine">
+      <div class="StatusLine">
+        <span class="-title">SDFEd</span>
+        <code class="-status" out:content="status.message"></code>
+      </div>
+    </section>
+  </body>
+</html>

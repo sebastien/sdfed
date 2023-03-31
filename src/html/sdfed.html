@@ -20,9 +20,13 @@
       import { asyncRun } from "../js/sdfed/python.js";
 
       const script = `
-import sdf
-print(sdf)
-sdf
+from sdf import *
+
+f = sphere(2) & slab(z0=-0.5, z1=0.5).k(0.1)
+f -= cylinder(1).k(0.1)
+f -= cylinder(0.25).circular_array(16, 2).k(0.1)
+
+f.save('gearlike.stl', samples=2**26)
 `;
 
       const context = {
@@ -48,7 +52,10 @@ sdf
     </script>
 
     <div data-ui="CodeEditor"></div>
+    <div data-ui="StatusLine"></div>
+
     <template data-src="components/CodeEditor.html"></template>
+    <template data-src="components/StatusLine.html"></template>
     <script async type="module">
       import ui from "../js/ui.js";
       ui();
