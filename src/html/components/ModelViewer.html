@@ -8,7 +8,6 @@
     <style>
       <![CDATA[
       .ModelViewer  {
-      	border: 2px solid red;
       }
       ]]>
     </style>
@@ -23,8 +22,9 @@
       import * as THREE from "three";
       import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
       import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+      import { on } from "@ui.js";
 
-      async function main() {
+      async function createView(parent) {
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setPixelRatio(window.devicePixelRatio);
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -38,9 +38,12 @@
         );
 
         // Next, set the camera position and add it to the scene.
-        camera.position.z = 5;
+        camera.position.z = 1.5;
+        camera.position.x = 1.5;
+        camera.position.y = 1.5;
 
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xfffef7);
         scene.add(camera);
 
         /*
@@ -50,25 +53,32 @@
         */
 
         // Create a grid resembling a cutting desk mat
-        const grid = new THREE.GridHelper(20, 20, 0x202020, 0x404040);
+        const grid = new THREE.GridHelper(10, 10, 0x808080, 0xA0A0A0);
         grid.position.y = 0;
         scene.add(grid);
 
         // Add a point light for better shading
-        const light = new THREE.PointLight(0xffffff, 1, 100);
+        const light = new THREE.PointLight(0xfdec9d, 1, 100);
         light.position.set(5, 5, 5);
         scene.add(light);
 
         // Add ambient light for more even lighting
-        const ambientLight = new THREE.AmbientLight(0x404040);
+        const ambientLight = new THREE.AmbientLight(0x304e7c);
         scene.add(ambientLight);
 
-        const material = new THREE.MeshPhongMaterial({
-          color: 0x2e75c2,
-          specular: 0x555555,
-          shininess: 50,
+        const material = new THREE.MeshStandardMaterial({
+          color: 0x1bb794,
+          roughness: 0.351,
+          metalness: 0.143,
         });
 
+        const animate = () => {
+          controls.update();
+          renderer.render(scene, camera);
+          requestAnimationFrame(animate);
+        };
+
+        const controls = new OrbitControls(camera, renderer.domElement);
         const loader = new OBJLoader();
         loader.load(
           "/data-gearlike.obj",
@@ -78,6 +88,19 @@
                 _.material = material;
               }
             });
+            const box = new THREE.Box3().setFromObject(o);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+            const maxDimension = Math.max(size.x, size.y, size.z);
+            o.scale.divideScalar(maxDimension);
+
+            box.getSize(size);
+            o.position.y += size.y/2/maxDimension;
+
+            const center = new THREE.Vector3();
+            box.getCenter(center);
+            controls.target.copy(center);
+
             scene.add(o);
             animate();
           },
@@ -87,18 +110,28 @@
 
         // Finally, add the renderer to the document and render the scene.
         renderer.setSize(window.innerWidth, window.innerHeight);
-        const controls = new OrbitControls(camera, renderer.domElement);
-        document.body.appendChild(renderer.domElement);
+        parent.appendChild(renderer.domElement);
         renderer.render(scene, camera);
 
-        const animate = () => {
-          controls.update();
-          renderer.render(scene, camera);
-          requestAnimationFrame(animate);
-        };
-      }
+        window.addEventListener("resize", () => {
+          // Update the size of the renderer when the parent element changes size
+          console.log("SET SIZE",  [parent.clientWidth, parent.clientHeight]);
+          renderer.setSize(parent.clientWidth, parent.clientHeight);
+                renderer.render(scene, camera);
+        });
 
-      // main();
+      }
+      on({
+        ["ModelViewer.Mount"]: (_, topic) => {
+          for (const {node,effect,scope} of topic.flush()) {
+            // NOTE: This is a bit awkward and should be wrapper a as higher level
+            // component object.
+            const parent = effect.query(".ModelViewer")[0];
+            createView(parent)
+          }
+          return false;
+      }})
+
       //]]>
     </script>
   </body>

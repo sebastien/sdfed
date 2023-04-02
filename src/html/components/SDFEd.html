@@ -43,19 +43,17 @@
         <div class="-header pad">
           <strong>SDFEd</strong> ― Signed Distance Fields Editor
         </div>
-        <div class="-main">
-          <div class="-editor">
+        <div class="-main cont">
+          <div class="-editor fit-h">
             <slot out:content=".@CodeEditor" />
           </div>
-          <div class="-detail stack">
-            <div class="-detail-toolbar select row">
+          <div class="-detail stack bd">
+            <div class="-detail-toolbar select row bd-b">
               <button class="icon">menu_book</button>
               <button class="icon">view_in_ar</button>
             </div>
             <div class="-preview grow"></div>
-            <!--
-            <slot out:content=".@ModelViewer" />
-            -->
+              <slot out:content=".@ModelViewer" />
           </div>
         </div>
       </div>
