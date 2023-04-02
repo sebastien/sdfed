@@ -4,6 +4,74 @@
     <title>Block Component</title>
     <style>
       /*<![CDATA[*/
+      .CodeMirror .cm-editor {
+          height: 100%;
+      }
+      .CodeMirror .cm-scroller {
+          font-family: var(--font-code);
+            font-weight: 300;
+          line-height: var(--font-code-line-height);
+          font-size: var(--font-code-size);
+      }
+      .CodeMirror .cm-gutters {
+        background-color: var(--darker-1);
+        border-color: transparent;
+      }
+      .CodeMirror .cm-activeLineGutter {
+        background-color: var(--color-accent-bg);
+      }
+      .CodeMirror .cm-matchingBracket,
+      .CodeMirror .cm-focused .cm-matchingBracket {
+        background-color: var(--color-accent-bg-alt);
+      }
+      .CodeMirror .cm-selectionBackground,
+      .CodeMirror .cm-focused .cm-selectionBackground {
+        background-color: var(--color-accent-bg);
+      }
+      .CodeMirror .cm-selectionMatch {
+        background-color: var(--color-accent-bg-alt);
+      }
+
+      .CodeMirror .cm-activeLine {
+        background-color: #fcd64710;
+      }
+
+      .CodeMirror .cm-cursor {
+        width: auto;
+        background-color: transparent;
+        border: none;
+        outline: 1px solid;
+        animation: cm-blink 1s infinite steps(1);
+      }
+
+      @keyframes cm-blink {
+        50% {
+          background-color: transparent;
+          outline-color: transparent;
+        }
+      }
+      /* Numbers */
+      .CodeMirror .ͼd {
+        color: #1bb794;
+      }
+      /* String */
+      .CodeMirror .ͼe {
+        color: #1bb794;
+      }
+      /* Symbol */
+      .CodeMirror .ͼg {
+        color: #404040;
+        font-weight: 600;
+      }
+      /* Keywords */
+      .CodeMirror .ͼb {
+        color: #808080;
+      }
+      /* Comments */
+      .CodeMirror .ͼm {
+        color: #4f4f4f;
+      }
+
       /*]]>*/
     </style>
   </head>
@@ -36,19 +104,23 @@
       import { javascript } from "@codemirror/lang-javascript/dist/index.js";
       import { python } from "@codemirror/lang-python/dist/index.js";
 
-      console.log("Code editor loaded");
       on({
         ["CodeEditor.Run"]: (event) => {
           console.log("Code editor running", {event})
         },
-        ["CodeEditor.Create"]: (_, topic) => {
-          for (const {effector,scope} of topic.flush()) {
+        ["CodeEditor.Mount"]: (_, topic) => {
+          for (const {effect,scope} of topic.flush()) {
             // NOTE: This is a bit awkward and should be wrapper a as higher level
             // component object.
-            const parent = effector.query(".CodeMirror")[0];
-            console.log("GOT CODE MIRROR", parent);
+            const parent = effect.query(".CodeMirror")[0];
             const view = new EditorView({
-              doc: "[0] * 100\n",
+              doc: (
+            `
+# Hello, world!
+def a(): return "Hello"
+f = sphere(2) & slab(z0=-0.5, z1=0.5).k(0.1)
+f -= cylinder(1).k(0.1)
+f -= cylinder(0.25).circular_array(16, 2).k(0.1)`),
               extensions: [basicSetup, python()],
               parent,
             });
