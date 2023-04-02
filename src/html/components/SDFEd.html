@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+  xmlns:out="https://github.com/sebastien/ui.js"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../css/uijs.css" rel="stylesheet" />
+    <title>SDFEd</title>
+    <style>
+      /*<![CDATA[*/
+      .SDFEd {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .SDFEd > .-main {
+        flex-grow: 1;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0px;
+      }
+      .SDFEd .-preview {
+        background: var(--color-darkest);
+      }
+
+      .SDFEd .CodeEditor {
+        height: 100%;
+        box-sizing: border-box;
+      }
+      /*]]>*/
+    </style>
+  </head>
+  <body>
+    <div class="template" id="SDFEd">
+      <div class="SDFEd expand">
+        <div class="-header pad">
+          <strong>SDFEd</strong> ― Signed Distance Fields Editor
+        </div>
+        <div class="-main">
+          <div class="-editor">
+            <slot out:content=".@CodeEditor" />
+          </div>
+          <div class="-detail stack">
+            <div class="-detail-toolbar select row">
+              <button class="icon">menu_book</button>
+              <button class="icon">view_in_ar</button>
+            </div>
+            <div class="-preview grow"></div>
+            <!--
+            <slot out:content=".@ModelViewer" />
+            -->
+          </div>
+        </div>
+        <div class="-status">
+          <slot out:content=".@StatusLine" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

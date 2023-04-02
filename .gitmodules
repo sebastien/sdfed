@@ -4,3 +4,9 @@
 [submodule "deps/uijs"]
 	path = deps/uijs
 	url = git@github.com:sebastien/ui.js.git
+[submodule "deps/extra"]
+	path = deps/extra
+	url = git@github.com:sebastien/extra.git
+[submodule "deps/cells"]
+	path = deps/cells
+	url = git@github.com:sebastien/cells.git

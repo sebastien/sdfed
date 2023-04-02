@@ -1,2 +1,7 @@
 appenv_declare sdef
 appenv_prepend PATH $APPENV_DIR/bin
+appenv_prepend PYTHONPATH $APPENV_DIR/deps/sdf
+appenv_prepend PYTHONPATH $APPENV_DIR/deps/extra/src/py
+appenv_prepend PYTHONPATH $APPENV_DIR/deps/cells/src/py
+appenv_prepend PYTHONPATH $APPENV_DIR/src/py
+# EOF

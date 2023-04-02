@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+>
+  <head>
+    <title>ModelViewer Component</title>
+    <style>
+      <![CDATA[
+      .ModelViewer  {
+      	border: 2px solid red;
+      }
+      ]]>
+    </style>
+  </head>
+  <body>
+    <section class="template" id="ModelViewer">
+      <div class="ModelViewer"></div>
+    </section>
+
+    <script type="module">
+      //<![CDATA[
+      import * as THREE from "three";
+      import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+      import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+      async function main() {
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = THREE.sRGBEncoding;
+
+        const camera = new THREE.PerspectiveCamera(
+          45,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+
+        // Next, set the camera position and add it to the scene.
+        camera.position.z = 5;
+
+        const scene = new THREE.Scene();
+        scene.add(camera);
+
+        /*
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+        directionalLight.position.set(0, 0, 2);
+        scene.add(directionalLight);
+        */
+
+        // Create a grid resembling a cutting desk mat
+        const grid = new THREE.GridHelper(20, 20, 0x202020, 0x404040);
+        grid.position.y = 0;
+        scene.add(grid);
+
+        // Add a point light for better shading
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+
+        // Add ambient light for more even lighting
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        const material = new THREE.MeshPhongMaterial({
+          color: 0x2e75c2,
+          specular: 0x555555,
+          shininess: 50,
+        });
+
+        const loader = new OBJLoader();
+        loader.load(
+          "/data-gearlike.obj",
+          (o) => {
+            o.traverse((_) => {
+              if (_.isMesh) {
+                _.material = material;
+              }
+            });
+            scene.add(o);
+            animate();
+          },
+          (_) => console.log("Loading", _),
+          (_) => console.error("Error", _)
+        );
+
+        // Finally, add the renderer to the document and render the scene.
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        const controls = new OrbitControls(camera, renderer.domElement);
+        document.body.appendChild(renderer.domElement);
+        renderer.render(scene, camera);
+
+        const animate = () => {
+          controls.update();
+          renderer.render(scene, camera);
+          requestAnimationFrame(animate);
+        };
+      }
+
+      // main();
+      //]]>
+    </script>
+  </body>
+</html>

@@ -4,12 +4,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="../css/uijs.css" rel="stylesheet" />
-    <title>Conversation example</title>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
+    <title>SDFEd</title>
+    <!-- <script src="https://cdn.jsdelivr.net/pyodide/v0.22.1/full/pyodide.js"></script>
+    -->
     <script type="importmap">
       {
         "imports": {
           "@codemirror/": "https://deno.land/x/codemirror_esm@v6.0.1/esm/",
+          "three": "https://unpkg.com/three@0.151.2/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.151.2/examples/jsm/",
           "@ui.js": "../js/ui.js"
         }
       }
@@ -17,8 +20,8 @@
   </head>
   <body>
     <script type="module">
-      import { asyncRun } from "../js/sdfed/python.js";
-
+      // TODO: This was to run the code client-side
+      // import { asyncRun } from "../js/sdfed/python.js";
       const script = `
 from sdf import *
 
@@ -29,6 +32,7 @@ f -= cylinder(0.25).circular_array(16, 2).k(0.1)
 f.save('gearlike.stl', samples=2**26)
 `;
 
+      /*
       const context = {
         A_rank: [0.8, 0.4, 1.2, 3.7, 2.6, 5.8],
       };
@@ -47,14 +51,30 @@ f.save('gearlike.stl', samples=2**26)
           );
         }
       }
+      */
+
+      async function main() {
+        fetch("/api/mesh", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            type: "script",
+            language: "python",
+            content: script,
+          }),
+        })
+          .then((_) => _.text())
+          .then((_) => console.log("GOT", _));
+      }
 
       main();
     </script>
 
-    <div data-ui="CodeEditor"></div>
-    <div data-ui="StatusLine"></div>
+    <div data-ui="SDFEd"></div>
 
+    <template data-src="components/SDFEd.html"></template>
     <template data-src="components/CodeEditor.html"></template>
+    <template data-src="components/ModelViewer.html"></template>
     <template data-src="components/StatusLine.html"></template>
     <script async type="module">
       import ui from "../js/ui.js";

@@ -2,6 +2,7 @@ SOURCES_HTML=$(wildcard src/html/*.html src/html/*/*.html)
 SOURCES_CSS=$(wildcard src/css/*.css src/css/*/*.css)
 SOURCES_JS=$(wildcard src/js/*.js src/js/*/*.js)
 SOURCES_JSON=$(wildcard src/json/*.json src/json/*/*.json)
+SOURCES_PY=$(wildcard src/py/*.py src/py/**/*.py) $(wildcard deps/extra/src/py/**/*.py)
 UIJS_JS=$(wildcard deps/uijs/src/js/*.js deps/uijs/src/js/*/*.js)
 UIJS_CSS=$(wildcard deps/uijs/src/css/*.css deps/uijs/src/css/*/*.css)
 BUILD_WHL=$(wildcard build/*.whl)
@@ -13,6 +14,7 @@ RUN_WHL=$(BUILD_WHL:build/%=run/lib/whl/%)
 RUN_ALL=$(RUN_JS) $(RUN_CSS) $(RUN_HTML) $(RUN_JSON) $(RUN_WHL)
 cmd-symlink=mkdir -p "$(dir $@)"; ln -sfr "$<" "$@"
 
+PYTHONPATH=$(abspath src/py):$(abspath deps/extra/src/py):$(abspath deps/sdf)
 
 define cmd-download
 	mkdir -p "$@.tmp"
@@ -25,7 +27,16 @@ endef
 
 .PHONY: run
 run: $(RUN_ALL)
-	@env -C run python -m http.server
+	@
+	# env -C run PYTHONPATH="$(PYTHONPATH)" python -m http.server
+	COMMAND="env -C run PYTHONPATH="$(PYTHONPATH)" python -m sdfed.server"
+	if [ -z "$$(which entr 2> /dev/null)" ]; then
+		echo "--- Running standalone: $$COMMAND"
+		env $$COMMAND
+	else
+		echo "--- Running using entr: $$COMMAND"
+		echo $(SOURCES_PY) | xargs -n1 echo | entr -nr $$COMMAND
+	fi
 
 .PHONY: shell
 shell:

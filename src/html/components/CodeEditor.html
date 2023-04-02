@@ -3,28 +3,25 @@
   <head>
     <title>Block Component</title>
     <style>
-      <![CDATA[
-      .CodeBlock  {
-      	border: 2px solid red;
-      }
-      ]]>
+      /*<![CDATA[*/
+      /*]]>*/
     </style>
   </head>
   <body>
     <template id="CodeEditor">
-      <div class="CodeBlock">
-        <div class="-header">
-          <div class="-origin">
+      <div class="CodeEditor stack">
+        <div class="-header row bd-t pad">
+          <div class="-origin grow">
             <span class="FileName">markdown.js</span>
             <span class="ProgrammingLanguage">(JavaScript)</span>
           </div>
           <div class="-actions">
-            <button>Edit</button>
+            <button class="default"><span class="icon">play_arrow</span> Run</button>
           </div>
         </div>
-        <div class="CodeMirror"></div>
-        <div class="-footer">
-            <button on:click="!CodeEditor.Run">Run</button>
+        <div class="CodeMirror grow bd-t bd-b"></div>
+        <div class="-footer pad row">
+          <small class="pill">No errors</small>
         </div>
       </div>
 
@@ -49,6 +46,7 @@
             // NOTE: This is a bit awkward and should be wrapper a as higher level
             // component object.
             const parent = effector.query(".CodeMirror")[0];
+            console.log("GOT CODE MIRROR", parent);
             const view = new EditorView({
               doc: "[0] * 100\n",
               extensions: [basicSetup, python()],
