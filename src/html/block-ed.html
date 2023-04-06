@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en-nz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="../css/uijs.css" rel="stylesheet" />
+    <title>BlockEd</title>
+    <style>
+      @layers reset layout ui components theme;
+    </style>
+    <script type="importmap">
+      {
+        "imports": {
+          "@codemirror/": "https://deno.land/x/codemirror_esm@v6.0.1/esm/",
+          "three": "https://unpkg.com/three@0.151.2/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.151.2/examples/jsm/",
+          "prosemirror-state": "https://cdn.jsdelivr.net/npm/prosemirror-state@1.4.2/+esm",
+          "prosemirror-transform": "https://cdn.jsdelivr.net/npm/prosemirror-transform@1.4.2/+esm",
+          "prosemirror-model": "https://cdn.jsdelivr.net/npm/prosemirror-model@1.4.2/+esm",
+          "prosemirror-view": "https://cdn.jsdelivr.net/npm/prosemirror-view@1.4.2/+esm",
+          "@ui.js": "../js/ui.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div data-ui="Blocks"></div>
+
+    <template data-src="components/Blocks.html"></template>
+    <template data-src="components/CodeEditor.html"></template>
+    <template data-src="components/TextEditor.html"></template>
+    <script async type="module">
+      import ui from "../js/ui.js";
+      ui();
+    </script>
+  </body>
+</html>

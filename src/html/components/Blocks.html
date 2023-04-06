@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+  xmlns:do="https://github.com/sebastien/ui.js"
+  xmlns:out="https://github.com/sebastien/ui.js"
+  >
+  <head>
+    <title>Blocks</title>
+    <style>
+      /*<![CDATA[*/
+      .Blocks li  {
+          display: flex;
+          border-bottom: 1px solid var(--color-bd);
+          padding-bottom: var(--pad-1);
+          margin-bottom: var(--pad-1);
+      }
+      .Blocks li:last-child  {
+        border-bottom-width: 0px;
+      }
+
+      .Blocks  li .actions {
+          width: 96px;
+      }
+      .Blocks  li .content {
+          flex-grow: grow;
+        }
+      @layer  components {
+        .Editor textarea {
+          border-color: transparent;
+          background-color: #FFFFFF;
+          width: 100%;
+          overflow:hidden;
+          resize: none;
+        }
+        .Cursor input {
+          border: unset;
+          background: unset;
+          outline: unset;
+          box-shadow: unset;
+          background-color: #FFFFFF;
+        }
+      }
+      /*]]>*/
+    </style>
+  </head>
+  <body>
+    <template id="Blocks">
+      <div class="Blocks stack">
+        <!-- TODO: We could use the flexbox model and then order to keep
+             the same markup and re-order -->
+        <ul>
+          <!-- TODO: We need to make that relative to where it's displayed -->
+          <!-- FIXME: document.blocks does not work displayed -->
+            <slot out:content=".blocks.*">
+            <!--FIXME: Removing the li will make it fail -->
+              <li>
+                <div class="actions">
+                  <!-- TODO: The buttons should be much more compact -->
+                  <button class="icon label">drag_indicator</button>
+                  <button class="icon label">expand_more</button>
+                </div>
+                <div class="content">
+                  Block <slot out:content="#" />: <slot out:content=".type" />
+                  <slot do:match=".type">
+                    <slot do:case="text" out:content=".content@Editor" />
+                    <slot do:case="code" out:content=".content@Editor" />
+                  </slot>
+                </div>
+              </li>
+            </slot>
+          <li class="Cursor">
+            <div class="actions">
+            </div>
+            <div class="content">
+              <span class="with-hover">
+                <input type="text" placeholder="Type / for commands" />
+                <div class="pos-rel">
+                  <menu class="popup on-hover">
+                    <li>
+                      <span class="label">JavaScript</span>
+                      <span class="icon">data_object</span>
+                    </li>
+                    <li>
+                      <span class="label">Markdown</span>
+                      <span class="icon">edit_note</span>
+                    </li>
+                    <hr data-label="Data" />
+                    <li>
+                      <span class="label"
+                        >File attachment
+                        <span class="detail">File attachment</span></span
+                      >
+                      <span class="icon">attach_file_add</span>
+                    </li>
+                  </menu>
+                </div>
+              </span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </template>
+
+    <template id="Editor">
+      <div class="Editor">
+        <textarea on:input="!Editor.Input"/>
+      </div>
+    </template>
+
+    <script type="module">
+      //<![CDATA[
+      import { on } from "@ui.js";
+      const blocks = [
+        {type:"text",content:"Hello, world"},
+        {type:"code",lang:"python", content:"print('Hello, world!')"},
+      ]
+      on({
+        ["Editor.Input"]: ({event}) => {
+          const e = event.target;
+          e.style.height = "auto";
+          e.style.height = e.scrollHeight + "px";
+        },
+        ["Blocks.Mount"]: (_, topic) => {
+        topic.flush().forEach( ({effect,scope})=>{
+           scope.state.put("", {blocks})
+           window.STATE = scope.state;
+           // const parent = effect.query(".CodeMirror")[0];
+        })}
+      })
+      //]]>
+    </script>
+
+  </body>
+</html>
