@@ -11,7 +11,12 @@ from .evaluator import render
 #     @classmethod
 #     def Eval( cls, code:str ) ->
 
+
 class API(Service):
+    @on(GET="/")
+    def main(self, request: HTTPRequest) -> HTTPResponse:
+        return request.redirect("/html/sdfed.html")
+
     @on(GET_POST="/api/mesh")
     async def mesh(self, request: HTTPRequest) -> HTTPResponse:
         await request.load()

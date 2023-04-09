@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+  xmlns:do="https://github.com/sebastien/ui.js"
+  xmlns:out="https://github.com/sebastien/ui.js"
+  xmlns:ref="https://github.com/sebastien/ui.js"
+>
+  <head>
+    <title>Split</title>
+    <link href="../../css/uijs.css" rel="stylesheet" />
+    <script type="importmap">
+      { "imports": { "@ui.js": "../../js/ui.js" } }
+    </script>
+    <style>
+      /*<![CDATA[*/
+      .Split {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+      }
+      .Split .-left ,
+      .Split .-right {
+        flex-basis: 50%;
+      }
+      .Split .-handle {
+        width: 3px;
+        cursor: col-resize;
+        border-left: 1px solid var(--control-bd);
+        border-right: 1px solid var(--control-bd);
+      }
+      .Split .-handle:hover {
+        background-color: var(--control-bg-hover);
+      }
+      /*]]>*/
+    </style>
+  </head>
+  <body>
+    <div class="bd">
+      <div data-ui="Split">
+        <div slot="left" class="pad">Left pane</div>
+        <div slot="right" class="pad">Right pane</div>
+      </div>
+    </div>
+
+    <template id="Split">
+      <div class="Split" ref="splitContainer">
+        <div class="-left" ref="leftContainer">
+          <slot out:content="@left" />
+        </div>
+        <div class="-handle" ref="handle" on:mouseDown="!Split.DragStart"></div>
+        <div class="-right" ref="rightContainer">
+          <slot out:content="@right" />
+        </div>
+      </div>
+    </template>
+
+    <script type="module" data-skip="true">
+      // We create the UI just for the example
+      import ui from "@ui.js";
+      ui();
+    </script>
+
+    <script type="module">
+      //<![CDATA[
+      import { on, patch } from "@ui.js";
+      import { drag, bind, unbind } from "../../js/ui/interaction.js";
+      import { prel } from "../../js/ui/utils.js";
+      on({
+        ["Split.DragStart"]: ({event,scope}, topic) => {
+          const x0 = scope.local.splitContainer.getBoundingClientRect().left;
+          const dx = event.pageX - scope.local.handle.getBoundingClientRect().left;
+          const {leftContainer, rightContainer} = scope.local;
+          drag(event,
+            event => {
+              const w = `${Math.round(event.pageX  - dx - x0)}px`;
+              leftContainer.style.flexBasis = w;
+              leftContainer.style.flexGrow = 0;
+              rightContainer.style.flexGrow = 1;
+            }
+          )
+        },
+      });
+      //]]>
+    </script>
+  </body>
+</html>
