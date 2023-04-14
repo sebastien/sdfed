@@ -19,7 +19,8 @@
           "prosemirror-view": "https://cdn.jsdelivr.net/npm/prosemirror-view@1.4.2/+esm",
           "prosemirror-schema-basic": "https://cdn.jsdelivr.net/npm/prosemirror-schema-basic@1.4.2/+esm",
           "prosemirror-schema-list": "https://cdn.jsdelivr.net/npm/prosemirror-schema-list@1.4.2/+esm",
-          "@ui.js": "../js/ui.js"
+          "@ui.js": "../js/ui.js",
+          "@ui/": "../js/ui/"
         }
       }
     </script>
@@ -83,6 +84,7 @@ f.save('gearlike.stl', samples=2**26)
     <template data-src="components/TextEditor.html"></template>
     <template data-src="components/ModelViewer.html"></template>
     <template data-src="components/StatusLine.html"></template>
+    <template data-src="components/Split.html"></template>
     <script async type="module">
       import ui from "../js/ui.js";
       ui();

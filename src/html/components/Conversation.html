@@ -7,30 +7,171 @@
   xmlns:ref="https://github.com/sebastien/ui.js"
 >
   <head>
+    <meta charset="utf-8" />
     <title>Conversation</title>
+    <link href="../../css/uijs.css" rel="stylesheet" />
     <script type="importmap">
       { "imports": { "@ui.js": "../../js/ui.js" } }
     </script>
     <style>
       /*<![CDATA[*/
+      .Message {
+        position: relative;
+          margin-bottom: -1px;
+      }
+      .Message  .-foreground,
+      .Message  .-background {
+        border: 1px solid var(--color-bd);
+      }
+      .Message  .-foreground {
+        position: relative;
+        z-index: 10;
+          background-color: var(--page-bg);
+            padding: var(--pad-1);
+      }
+      .Message  .-background {
+        opacity: var(--opacity-dimmed);
+        z-index: 0;
+          position: absolute;
+            top: 5px;
+            left: 5px;
+            bottom: -5px;
+            right: -5px;
+            right: -5px;
+      }
+
+      .Message .-body .origin {
+          font-size: 90%;
+          display: flex;
+          align-items: center;
+      }
+
+      .Message .-origin .icon {
+        margin-right: 0.25em;
+       }
+
+      .Message .-container {
+        display: flex;
+       }
+
+      .Message .-content {
+        flex-grow: 1;
+      }
+
+      .Message .-notes {
+          margin-top: var(--pad-1);
+       }
+
+      .Message .-notes li {
+        border-top: 1px solid var(--color-bd);
+          padding: var(--pad-0) 0px;
+      }
+
+      .NoteInput {
+        background: var(--control-bg);
+        display: flex;
+      }
+      .NoteInput textarea {
+        border-width: 0px;
+      }
+      .NoteInput .-actions {
+        bottom: var(--pad-1);
+        right: var(--pad-1);
+      }
+
+      .MessageInput {
+        background: var(--control-bg);
+        display: flex;
+        position: fixed;
+        left:   80px;
+        right:  80px;
+        bottom: 40px;
+      }
+
+      .MessageInput .-actions {
+        bottom: var(--pad-1);
+        right: var(--pad-1);
+      }
+
       /*]]>*/
     </style>
   </head>
   <body>
-    <div data-ui="Conversation"></div>
+    <div data-ui="Conversation" data-path="conversation.0"></div>
 
     <template id="Conversation">
       <div class="Conversation">
-        <div class="Message">
-          <div class="-content">Lorem ipsum dolor sit amet</div>
+          <div class="Message with-hover" data-revisions="2">
+            <div class="-background"></div>
+            <div class="-foreground">
+              <div class="-body">
+                <div class="origin">
+                  <span class="icon">person</span> Sebastien <time datetime="2023-04-14T19:17">10 minutes ago</time></div>
+                </div>
+                <div class="-container">
+                  <div class="-content">Lorem ipsum dolor sit amet</div>
+                  <div class="-actions on-hover">
+                    <button class="icon label">edit</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="Message">
+            <div class="-background"></div>
+            <div class="-foreground">
+              <div class="-body with-hover">
+                <div class="origin agent"><span class="icon">support_agent</span> Smith <time datetime="2023-04-14T19:18">8 minutes ago</time></div>
+                <div class="-container">
+                  <div class="-content">Lorem ipsum dolor sit amet</div>
+                  <div class="-actions on-hover">
+                    <button class="icon label" title="Regenerate answer">cached</small>
+                  </div>
+
+                </div>
+              </div>
+              <ul class="-notes">
+                <li class="correction">
+                    <span class="origin pill"><span class="icon">person</span> user</span>
+                    <span class="detail">Function names should be <code>camelCase</code></span>
+                </li>
+                <li class="knowledge">
+                    <span class="origin pill error"><span class="icon">robot</span> python</span>
+                    <span class="detail">Exception <code>KeyErrro: blah blah at line 10</code></span>
+                </li>
+                <li class="new">
+                  <button class="noborder dimmed"><span class="icon">add</span> Note</button>
+                  <div class="NoteInput pos-rel REMOVED">
+                      <textarea class="fit-w pad-1" placeholder="Add a note"></textarea>
+                      <div class="-actions pos-abs">
+                        <button class="icon label">add</button>
+                      </div>
+                  </div>
+
+                </li>
+              </ul>
+            </div>
+          </div>
         </div>
-      </div>
+        <div class="MessageInput pos-rel">
+            <textarea class="fit-w pad-1" placeholder="Continue the conversation…"></textarea>
+            <div class="-actions pos-abs">
+              <button class="icon label">send</button>
+            </div>
+        </div>
     </template>
 
     <script type="module" data-skip="true">
       // We create the UI just for the example
       import ui from "@ui.js";
-      ui();
+      ui(document, {
+      conversation:[{
+        messages:[{
+          "from":"user",
+          "data":new Date(),
+          "content":[{type:"text",value:"Lorem ipsum"}]
+        }]
+      }]});
     </script>
   </body>
 </html>

@@ -10,7 +10,10 @@
     <title>Split</title>
     <link href="../../css/uijs.css" rel="stylesheet" />
     <script type="importmap">
-      { "imports": { "@ui.js": "../../js/ui.js" } }
+      { "imports": {
+      "@ui.js": "../../js/ui.js" ,
+      "@ui/": "../../js/ui/"
+      }}
     </script>
     <style>
       /*<![CDATA[*/
@@ -64,8 +67,8 @@
     <script type="module">
       //<![CDATA[
       import { on, patch } from "@ui.js";
-      import { drag, bind, unbind } from "../../js/ui/interaction.js";
-      import { prel } from "../../js/ui/utils.js";
+      import { drag, bind, unbind } from "@ui/interaction.js";
+      import { prel } from "@ui/utils.js";
       on({
         ["Split.DragStart"]: ({event,scope}, topic) => {
           const x0 = scope.local.splitContainer.getBoundingClientRect().left;

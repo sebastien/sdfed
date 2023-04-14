@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:on="https://github.com/sebastien/ui.js"
+  xmlns:do="https://github.com/sebastien/ui.js"
+  xmlns:out="https://github.com/sebastien/ui.js"
+  xmlns:ref="https://github.com/sebastien/ui.js"
+>
+  <head>
+    <title>Cursor</title>
+    <link href="../../css/uijs.css" rel="stylesheet" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@ui.js": "../../js/ui.js",
+          "@ui/": "../../js/ui/"
+        }
+      }
+    </script>
+    <style>
+      /*<![CDATA[*/
+      /*]]>*/
+    </style>
+  </head>
+  <body>
+    <div class="bd">
+      <div data-ui="CursorItems"></div>
+    </div>
+
+    <template id="CursorItems">
+      <ul>
+        <slot out:content=".items.*">
+          <li>
+            <slot out:content="#" />
+            <!-- FIXME: If i uncomment that, it doesn't work anymore --->
+            <!--
+            <slot out:content=".type" />
+            -->
+          </li>
+        </slot>
+      </ul>
+    </template>
+
+    <script type="module" data-skip="true">
+      // We create the UI just for the example
+      import ui from "@ui.js";
+      ui();
+    </script>
+
+    <script type="module">
+      //<![CDATA[
+      import { on, patch } from "@ui.js";
+      import { cells } from "@ui/cells.js";
+      const blocks = [
+        { type: "text", content: "Hello, world" },
+        { type: "code", lang: "python", content: "print('Hello, world!')" },
+      ];
+
+      // NOTE: We need to be careful about not having both the global and the
+      // local state. If a cell network updates the global state it should be
+      // bound only once?
+      const network = cells({
+        "blocks,cursor->items": (blocks, cursor) => {
+          // On every move of the cursor, we generate a new mapping of blocks
+          // with the cursor inserted.
+          let i = 0;
+          let r = {};
+          for (let b of blocks) {
+            if (cursor === i) {
+              r[i++] = { type: "cursor" };
+              cursor = null;
+            }
+            r[i++] = b;
+          }
+          if (cursor) {
+            r[i++] = { type: "cursor" };
+          }
+          console.log("RESULT", r, {blocks, cursor});
+          return r;
+        },
+      });
+
+      on({
+        ["CursorItems.Mount"]: ({ event, scope }, topic) => {
+          topic.flush().forEach(({ effect, scope }) => {
+            scope.state.put("", { blocks, cursor: 1 });
+            console.log("STATE", scope.state, network);
+            window.S = network.apply(scope).init();
+          });
+        },
+      });
+      //]]>
+    </script>
+  </body>
+</html>

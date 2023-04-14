@@ -3,6 +3,7 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xmlns:on="https://github.com/sebastien/ui.js"
   xmlns:out="https://github.com/sebastien/ui.js"
+  xmlns:tmpl="https://github.com/sebastien/ui.js"
 >
   <head>
     <meta charset="utf-8" />
@@ -14,9 +15,7 @@
       .SDFEd {
         position: fixed;
         top: 0px;
-        left: 0px;
-        width: 100vw;
-        height: 100vh;
+        left: 0px; width: 100vw; height: 100vh;
         display: flex;
         flex-direction: column;
       }
@@ -44,16 +43,21 @@
           <strong>SDFEd</strong> ― Signed Distance Fields Editor
         </div>
         <div class="-main cont">
-          <div class="-editor fit-h">
-            <slot out:content=".@TextEditor" />
-          </div>
-          <div class="-detail stack bd">
-            <div class="-detail-toolbar select row bd-b">
-              <button class="icon">menu_book</button>
-              <button class="icon">view_in_ar</button>
+          <!-- This is how we embed a component in there -->
+          <div data-ui="Split">
+            <div slot="left" class="-editor fit-h">
+              <slot out:content=".@TextEditor" />
             </div>
-            <div class="-preview grow"></div>
-              <slot out:content=".@ModelViewer" />
+            <div slot="right">
+              <div class="-detail stack bd">
+                <div class="-detail-toolbar select row bd-b">
+                  <button class="icon">menu_book</button>
+                  <button class="icon">view_in_ar</button>
+                </div>
+                <div class="-preview grow"></div>
+                <slot out:content=".@ModelViewer" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
