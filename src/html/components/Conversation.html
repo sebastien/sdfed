@@ -5,6 +5,7 @@
   xmlns:do="https://github.com/sebastien/ui.js"
   xmlns:out="https://github.com/sebastien/ui.js"
   xmlns:ref="https://github.com/sebastien/ui.js"
+  xmlns:ui="https://github.com/sebastien/ui.js"
 >
   <head>
     <meta charset="utf-8" />
@@ -101,22 +102,35 @@
 
     <template id="Conversation">
       <div class="Conversation">
-          <div class="Message with-hover" data-revisions="2">
+        <slot out:content=".messages.*">
+          <div class="Message with-hover">
             <div class="-background"></div>
             <div class="-foreground">
               <div class="-body">
-                <div class="origin">
-                  <span class="icon">person</span> Sebastien <time datetime="2023-04-14T19:17">10 minutes ago</time></div>
-                </div>
+                <slot out:content=".origin:Origin"></slot>
                 <div class="-container">
-                  <div class="-content">Lorem ipsum dolor sit amet</div>
+                  <div class="-content">
+                    <slot out:content=".content:RichText" />
+                  </div>
                   <div class="-actions on-hover">
-                    <button class="icon label">edit</small>
+                    <button class="icon label" on:click="!Message.Edit">edit</small>
                   </div>
                 </div>
+                <ul class="-notes">
+                  <slot out:content=".notes.*:Note"></slot>
+                  <li class="new REMOVED">
+                    <button class="noborder dimmed"><span class="icon">add</span> Note</button>
+                    <slot out:content=".:NoteInput"
+                          on:Create="!.CreateNote"
+                          on:Update="!.UpdateNote"
+                          ></slot>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
+        </slot>
+        <!--
           <div class="Message">
             <div class="-background"></div>
             <div class="-foreground">
@@ -131,46 +145,99 @@
                 </div>
               </div>
               <ul class="-notes">
-                <li class="correction">
-                    <span class="origin pill"><span class="icon">person</span> user</span>
-                    <span class="detail">Function names should be <code>camelCase</code></span>
-                </li>
-                <li class="knowledge">
-                    <span class="origin pill error"><span class="icon">robot</span> python</span>
-                    <span class="detail">Exception <code>KeyErrro: blah blah at line 10</code></span>
-                </li>
+                <slot out:content=".notes.*:Note" />
                 <li class="new">
                   <button class="noborder dimmed"><span class="icon">add</span> Note</button>
-                  <div class="NoteInput pos-rel REMOVED">
-                      <textarea class="fit-w pad-1" placeholder="Add a note"></textarea>
-                      <div class="-actions pos-abs">
-                        <button class="icon label">add</button>
-                      </div>
-                  </div>
-
+                  <slot out:content=".:NoteInput" />
                 </li>
               </ul>
             </div>
           </div>
         </div>
+        <div>
+        -->
+        <slot out:content=".:MessageInput" on:Send="!.SendMessage" ></slot>
+
+    </template>
+
+
+    <template id="RichText">
+      <slot out:content=".*">
+        <slot do:match=".type">
+          <span do:case="text">
+            <slot out:content=".value"></slot>
+          </span>
+          <code do:case="code">
+            <slot out:content=".value"></slot>
+          </code>
+        </slot>
+      </slot>
+    </template>
+
+    <template id="Origin">
+      <span class="origin">
+        <span class="icon"><slot out:content=".type" ></slot></span>
+        <span class="name"><slot out:content=".name" ></slot></span>
+        <time datetime="2023-04-14T19:17"><slot out:content=".datetime" /></time>
+      </span>
+    </template>
+
+    <template id="Note">
+      <li class="Note" out:data-type=".type">
+        <slot out:content=".origin:Origin"></slot>
+        <span class="detail"> <slot out:content=".content:RichText"></slot></span>
+      </li>
+    </template>
+
+    <template id="NoteInput">
+      <div class="NoteInput pos-rel">
+          <textarea class="fit-w pad-1" placeholder="Add a note"></textarea>
+          <div class="-actions pos-abs">
+            <button class="icon label">add</button>
+          </div>
+      </div>
+    </template>
+
+
+    <template id="MessageInput">
         <div class="MessageInput pos-rel">
             <textarea class="fit-w pad-1" placeholder="Continue the conversation…"></textarea>
             <div class="-actions pos-abs">
-              <button class="icon label">send</button>
+              <button on:click="!.Send" class="icon label">send</button>
             </div>
         </div>
     </template>
 
     <script type="module" data-skip="true">
       // We create the UI just for the example
-      import ui from "@ui.js";
+      import {ui, controller} from "@ui.js";
+
+      controller("MessageInput")
+        .mount(_ => console.log("Mounting", _))
+        .on({
+          Send:_ => {
+          // TODO: Next step is to support event binding when we use a component
+          // in a `<slot out:Content>`, we may even want to introduce <ui:Message>
+            console.log("Message Input send", _)
+          }
+        });
+
       ui(document, {
       conversation:[{
-        messages:[{
-          "from":"user",
-          "data":new Date(),
-          "content":[{type:"text",value:"Lorem ipsum"}]
-        }]
+        messages:[
+          {
+            "origin":{type:"person", name:"You", datetime:new Date()},
+            "content":[{type:"text",value:"Lorem ipsum"}]
+          },
+          {
+            "origin":{type:"support_agent", name:"Jane", datetime:new Date()},
+            "content":[{type:"text",value:"Lorem ipsum"},{type:"code",value:"ASDASDAAS"}],
+            "notes":[
+              {"type":"rule", origin:{type:"person", name:"You"}, content:[{type:"text", value:"Function names should be `camelCase`"}]},
+              {"type":"error", origin:{type:"support_agent", name:"Jane", datetime:new Date()}, content:[{type:"text", value:"Exception `KeyError` at line 10"}]}
+            ],
+          }
+        ]
       }]});
     </script>
   </body>

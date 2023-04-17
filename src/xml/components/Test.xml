@@ -1,0 +1,31 @@
+<?xml version="1.1"?>
+<?xml-stylesheet type="text/xsl" media="screen" href="../uijs.xsl"?>
+
+<UI
+  xmlns="https://github.com/sebastien/uijs"
+  xmlns:out="https://github.com/sebastien/uijs"
+  xmlns:on="https://github.com/sebastien/uijs"
+>
+  <!-- This is an example of a pure XML component, that uses the XSL
+  stylesheet to render for different types -->
+
+  <Component name="Menu">
+      <Style><![CDATA[
+        /* Some CSS here */
+      ]]></Style>
+
+      <View xmlns="http://www.w3.org/1999/xhtml">
+          <ul class="Item">
+            <li out:content=".items.*">
+                <slot out:content=".label" />
+            </li>
+          </ul>
+      </View>
+
+      <Controller><![CDATA[
+        // Some JavaScript here
+      ]]></Controller>
+
+  </Component>
+
+</UI>

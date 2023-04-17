@@ -53,7 +53,7 @@
         */
 
         // Create a grid resembling a cutting desk mat
-        const grid = new THREE.GridHelper(10, 10, 0x808080, 0xA0A0A0);
+        const grid = new THREE.GridHelper(10, 10, 0x808080, 0xa0a0a0);
         grid.position.y = 0;
         scene.add(grid);
 
@@ -95,7 +95,7 @@
             o.scale.divideScalar(maxDimension);
 
             box.getSize(size);
-            o.position.y += size.y/2/maxDimension;
+            o.position.y += size.y / 2 / maxDimension;
 
             const center = new THREE.Vector3();
             box.getCenter(center);
@@ -115,22 +115,22 @@
 
         window.addEventListener("resize", () => {
           // Update the size of the renderer when the parent element changes size
-          console.log("SET SIZE",  [parent.clientWidth, parent.clientHeight]);
+          console.log("SET SIZE", [parent.clientWidth, parent.clientHeight]);
           renderer.setSize(parent.clientWidth, parent.clientHeight);
-                renderer.render(scene, camera);
+          renderer.render(scene, camera);
         });
-
       }
       on({
         ["ModelViewer.Mount"]: (_, topic) => {
-          for (const {node,effect,scope} of topic.flush()) {
+          for (const { node, effect, scope } of topic.flush()) {
             // NOTE: This is a bit awkward and should be wrapper a as higher level
             // component object.
             const parent = effect.query(".ModelViewer")[0];
-            createView(parent)
+            createView(parent);
           }
           return false;
-      }})
+        },
+      });
 
       //]]>
     </script>
