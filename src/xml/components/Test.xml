@@ -1,4 +1,4 @@
-<?xml version="1.1"?>
+<?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" media="screen" href="../uijs.xsl"?>
 
 <UI
@@ -10,20 +10,31 @@
   stylesheet to render for different types -->
 
   <Component name="Menu">
+
+      <Description><![CDATA[
+      `Menu` displays a list of items.
+      ]]></Description>
       <Style><![CDATA[
         /* Some CSS here */
       ]]></Style>
 
-      <View xmlns="http://www.w3.org/1999/xhtml">
-          <ul class="Item">
-            <li out:content=".items.*">
-                <slot out:content=".label" />
-            </li>
+      <View>
+          <ul class="Item" xmlns="http://www.w3.org/1999/xhtml">
+             <slot out:content=".items.*" >
+                <li>
+                    <slot out:content=".label" />
+                </li>
+              </slot>
           </ul>
       </View>
 
+      <Data><![CDATA[
+      {items:[{label:"New"}, {label:"Open"}, {label:"Quit"}]}
+      ]]></Data>
+
       <Controller><![CDATA[
         // Some JavaScript here
+        console.log("POUET");
       ]]></Controller>
 
   </Component>

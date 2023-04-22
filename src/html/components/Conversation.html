@@ -83,10 +83,6 @@
       .MessageInput {
         background: var(--control-bg);
         display: flex;
-        position: fixed;
-        left:   80px;
-        right:  80px;
-        bottom: 40px;
       }
 
       .MessageInput .-actions {
@@ -94,20 +90,30 @@
         right: var(--pad-1);
       }
 
+      .Conversation {
+        position: relative;
+        height: 100%;
+        box-sizing: border-box;
+        max-height: 100%:
+      }
+
       /*]]>*/
     </style>
   </head>
-  <body>
-    <div data-ui="Conversation" data-path="conversation.0"></div>
+  <body class="full-h stack">
+    <div data-ui="Conversation" class="fit-h grow" data-path="conversation.0"></div>
 
     <template id="Conversation">
-      <div class="Conversation">
-        <slot out:content=".messages.*">
+      <div class="Conversation stack">
+        <div class=".-messages grow" >
+          <slot out:content=".messages.*">
           <div class="Message with-hover">
             <div class="-background"></div>
             <div class="-foreground">
               <div class="-body">
-                <slot out:content=".origin:Origin"></slot>
+                <div class="small dimmed">
+                  <slot out:content=".origin:Origin"></slot>
+                </div>
                 <div class="-container">
                   <div class="-content">
                     <slot out:content=".content:RichText" />
@@ -128,8 +134,11 @@
                 </ul>
               </div>
             </div>
+                    </slot>
           </div>
-        </slot>
+        </div>
+        <slot out:content=".:MessageInput" on:Send="!.SendMessage" ></slot>
+      </div>
         <!--
           <div class="Message">
             <div class="-background"></div>
@@ -156,7 +165,6 @@
         </div>
         <div>
         -->
-        <slot out:content=".:MessageInput" on:Send="!.SendMessage" ></slot>
 
     </template>
 
@@ -221,6 +229,17 @@
             console.log("Message Input send", _)
           }
         });
+
+      controller("Conversation")
+        .on("SendMessage", _ => {
+          // This is a bit awkward here, but what we want to do is to add
+          // a message at the current global value.
+          _.scope.state.append([..._.scope.path, "messages"], {
+              "origin":{type:"person", name:"You", datetime:new Date()},
+              "content":[{type:"text",value:"Lorem ipsum"}]
+            })
+        })
+
 
       ui(document, {
       conversation:[{
