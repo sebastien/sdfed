@@ -1,0 +1,41 @@
+<?xml-stylesheet type="text/xsl" media="screen" href="../uijs.xslt"?>
+<UI xmlns="https://github.com/sebastien/uijs" xmlns:out="https://github.com/sebastien/uijs" xmlns:on="https://github.com/sebastien/uijs" xmlns:x="https://github.com/sebastien/uijs" xmlns:s="https://github.com/sebastien/uijs">
+  <Component name="Conversation">
+    <Imports><x:Message /><x:MessageOrigin /><x:RichText /></Imports>
+    <Description>
+<![CDATA[
+      A collection of messages.
+    ]]>
+    </Description>
+    <View>
+      <s:Conversation class="stack">
+        <s:messages as="ul" class="grow">
+          <slot out:content=".messages.*">
+            <s:message as="li" margin-bottom="var(--pad-1)" out:data-origin=".origin.type">
+              <s:_ select="[data-origin='person']" background-color="red" />
+              <s:_ select="[data-origin='support_agent']" background-color="blue" />
+              <x:Message />
+            </s:message>
+          </slot>
+        </s:messages>
+        <s:input>
+          <x:MessageInput on:Send="!.SendMessage"  />
+        </s:input>
+      </s:Conversation>
+    </View>
+    <Data><![CDATA[
+      {
+        messages:[
+          {
+            "origin":{type:"person", name:"You", datetime:new Date()},
+            "content":[{type:"text",value:"Lorem ipsum"}]
+          },
+          {
+            "origin":{type:"support_agent", name:"Jane", datetime:new Date()},
+            "content":[{type:"text",value:"Lorem ipsum"},{type:"code",value:"ASDASDAAS"}]
+          }
+        ]
+      }
+      ]]></Data>
+  </Component>
+</UI>

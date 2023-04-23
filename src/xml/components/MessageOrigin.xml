@@ -1,0 +1,32 @@
+<?xml-stylesheet type="text/xsl" media="screen" href="../uijs.xslt"?>
+<UI xmlns="https://github.com/sebastien/uijs" xmlns:out="https://github.com/sebastien/uijs" xmlns:on="https://github.com/sebastien/uijs" xmlns:x="https://github.com/sebastien/uijs" xmlns:s="https://github.com/sebastien/uijs">
+  <Component name="MessageOrigin">
+    <Description>
+<![CDATA[
+      Displays the origin of a message
+    ]]>
+    </Description>
+    <Style>
+      <s:MessageOrigin>
+        <s:from font-weight="bold" />
+        <s:time color="green" />
+      </s:MessageOrigin>
+    </Style>
+    <View>
+      <s:MessageOrigin class="small" out:data-type=".person">
+        Origin
+        <s:from>from <slot out:content=".name" /></s:from>
+        <s:time as="time">at <slot out:content=".datetime" /></s:time>
+      </s:MessageOrigin>
+    </View>
+    <Data>
+<![CDATA[
+        {type:"person", name:"You", datetime:new Date()}
+      ]]>
+    </Data>
+    <Controller>
+<![CDATA[
+      ]]>
+    </Controller>
+  </Component>
+</UI>
